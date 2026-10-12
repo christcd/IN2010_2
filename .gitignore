@@ -1,0 +1,20 @@
+# Testfiler (store, kan hentes på nytt med in2010-testrunner)
+testfiles/
+
+# Zip-filer (testrunner og innleveringsfil)
+*.zip
+
+# Python
+__pycache__/
+*.pyc
+
+# Java
+*.class
+out/
+
+# Editor/OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
