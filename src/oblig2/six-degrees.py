@@ -1,5 +1,6 @@
 import sys
 from collections import deque
+import heapq
 
 def debug(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
@@ -35,9 +36,87 @@ def komponentstorrelse (graf, start, visited):
     #Returnerer størrelsen på komponenten
     return antall
 
+def djikstra (graf, rating, start, slutt):
+    dist = {}
+    parent = {}
+
+    #queue = kø
+
+
+    dist[start] = 0
+
+    queue = [(0, start)]
+
+    while queue:
+        avstand, current_node = heapq.heappop(queue)
+
+
+
+        if avstand  > dist[current_node]:
+            continue
+        
+        elif current_node == slutt:
+            break
+
+        else:
+            for nabo in graf[current_node]:
+
+                if current_node.startswith("nm"):
+                    vekt = 10 - rating[nabo]
+
+                else: 
+                    vekt = 0
+                distanse = dist[current_node] + vekt
+
+                if nabo not in dist or distanse < dist[nabo]:
+                    dist[nabo] = distanse
+                    parent[nabo] = current_node
+                    heapq.heappush(queue, (distanse, nabo))
+
+    
+
+    if slutt not in dist:
+        return []
+
+    sti = [slutt]
+    while sti[-1] != start:
+        sti.append(parent[sti[-1]])
+    sti.reverse()
+
+    return sti
+
+
+'''
+    while queue:
+        
+        current_node = queue.minste
+        fjern den fra køen
+
+        if current_Node.dist > dist[current_node]
+            hopp over
+        elif current_node == slutt:
+            stopp
+        else: 
+            for nabo in graf[node]:
+                distansen = regne ut avstanden til naboen
+
+                if nabo not in dist or dist[noden du står i] + vekten på kanten < dist[nabo]
+
+                    dist[nabo] = dist[noden du står i] + vekten på kanten
+                    parent [nabo] = noden jeg står i
+                    legg til nabo i køen
+
+    bygge sti her
+
+    return dist[slutt], sti
+
+
+    '''
+
 def main():
     #Lager ordbok for innlesing
     graf = {}
+    rating = {}
     skuespillere = []
 
     #debug("Dette er et eksempel på å printe debug info. Du kan slette denne linjen")
@@ -48,7 +127,9 @@ def main():
     for i in range(M):
         parts = input().split("\t");
         graf[parts[0]] = []
+        rating[parts[0]] = float(parts[2])
         # parts består av [ttid, tittel, rating]
+
 
     #Skuespillere
     A = int(input())
@@ -62,8 +143,8 @@ def main():
     E = int(input())
     for i in range(E):
         parts = input().split("\t");
-        film = parts [0]
-        skuespiller  = parts [1]
+        film = parts[0]
+        skuespiller  = parts[1]
 
         graf[film].append(skuespiller)
         graf[skuespiller].append(film)
@@ -100,11 +181,6 @@ def main():
         antall = storrelser[komponent_size]
         print(f"There are {antall} components of size {komponent_size}")    # print en linje per komponentstørrelse
 
-    
-
-
-
-
 
 
 
@@ -118,6 +194,11 @@ def main():
     Qc = int(input())
     for i in range(Qc):
         parts = input().split("\t");
+        sti = djikstra(graf, rating, parts[0], parts[1])
+        print("\t".join(sti))
+
+
+
         # parts består av [nmid₁, nmid₂]
 
         # Finn chilleste vei og print ut på en linje
