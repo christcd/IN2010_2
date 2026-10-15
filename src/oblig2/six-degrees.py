@@ -113,6 +113,40 @@ def djikstra (graf, rating, start, slutt):
 
     '''
 
+def korteste_vei(graf, start, slutt):
+    #første gang vi når slutten er det gjennom korteste vei
+    #parent husker hvilken node vi kom fra og funker som "besøkt"
+    parent = {start: None}
+    # kø med noder vi har funnet, men ikke sjekka enda(først inn, først ut)
+    queue = deque([start])
+
+
+
+    while queue:
+        current_node = queue.popleft()
+
+        #Fant målet, slutt å lete
+        if current_node == slutt:
+            break
+
+        for nabo in graf[current_node]:
+            # bare noder vi ikke har sett før
+            if nabo not in parent:
+                parent[nabo] = current_node
+                queue.append(nabo)
+    
+    #fant ingen sti
+    if slutt not in parent:
+        return []
+
+    # bygg stien baklengs fra slutt til start så snu den
+    sti = [slutt]
+    while sti[-1] != start:
+        sti.append(parent[sti[-1]])
+    sti.reverse()
+
+    return sti
+
 def main():
     #Lager ordbok for innlesing
     graf = {}
@@ -190,6 +224,8 @@ def main():
         # parts består av [nmid₁, nmid₂]
 
         # Finn korteste vei og print ut på en linje
+        sti = korteste_vei(graf, parts[0], parts[1])
+        print("\t".join(sti))
 
     Qc = int(input())
     for i in range(Qc):
